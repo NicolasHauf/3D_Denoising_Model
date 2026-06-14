@@ -12,7 +12,7 @@
 
 #SBATCH --cpus-per-task=4
 
-#SBATCH --time=0-00:01:00 	   # set limit 1 min for test job
+#SBATCH --time=0-00:05:00 	   # set limit 5 min for test job
 
 # Virtual environment setup
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd)"
@@ -30,21 +30,6 @@ PYCODE
 if command -v nvidia-smi >/dev/null 2>&1; then
     nvidia-smi
 else
-    echo 'nvidia-smi not found'
-fi
-
-export CUDNN_PATH="$HOME/.local/lib/python3.9/site-packages/nvidia/cudnn"
-export LD_LIBRARY_PATH="${CUDNN_PATH}/lib:${LD_LIBRARY_PATH:-}"
-
-# Detect GPUs and print the number of available GPUs
-.venv/bin/python3 - <<'PYCODE'
-import tensorflow as tf
-print('Num GPUs Available after activation:', len(tf.config.experimental.list_physical_devices('GPU')))
-print('If there are still no GPUs available, it may be due to missing CUDA or cuDNN libraries. Please ensure that they are properly installed and configured.')
-PYCODE
-
-if command -v nvidia-smi >/dev/null 2>&1; then
-    nvidia-smi
-else
+    echo 'If there are still no GPUs available, it may be due to missing CUDA or cuDNN libraries. Please ensure that they are properly installed and configured.'
     echo 'nvidia-smi not found'
 fi
